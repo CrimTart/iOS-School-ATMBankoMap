@@ -11,12 +11,12 @@
 @implementation CustomAnnotation
 
 // required if you set the MKPinAnnotationView's "canShowCallout" property to YES
-- (NSString *)title {
+-(NSString *) title {
     return _mytitle;
 }
 
 // optional
-- (NSString *)subtitle {
+-(NSString *) subtitle {
     return _mysubtitle;
 }
 

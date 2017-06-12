@@ -16,7 +16,7 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+-(BOOL) application: (UIApplication *)application didFinishLaunchingWithOptions: (NSDictionary *)launchOptions {
     UITabBarController *tabbar = [[UITabBarController alloc] init];
     UIViewController *vc1 = [BankoMapViewController new];
     UIViewController *vc2 = [BankoTableViewController new];

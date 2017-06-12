@@ -36,9 +36,6 @@
     NSString *openNow = @"opennow";
     NSString *key = @"AIzaSyALRbeAncyqpxvGS2YGGkbENHXarw00D9U";
     //@"AIzaSyDKfCdJ5BPL27dPCPHBjmoY9ufRBzBBXIs";
-    //AIzaSyBhK49NlVTaBtYtzo0mupr-CxGE0q9IiyI
-    //AIzaSyD9Mb_3ap4WoW-p2sWewz83G9JuAeB7JlQ
-    //AIzaSyDKfCdJ5BPL27dPCPHBjmoY9ufRBzBBXIs
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&keyword=atm&rankby=distance&%@&key=%@", mylocation.coordinate.latitude, mylocation.coordinate.longitude, openNow, key]];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
