@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  BankoMapViewController.h
 //  ATMBankoMap
 //
 //  Created by Admin on 12.06.17.
@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface BankoMapViewController : UIViewController
 
-@property (strong, nonatomic) UIWindow *window;
+-(void) centerOn: (NSInteger)annotationNumber;
 
 @end
-

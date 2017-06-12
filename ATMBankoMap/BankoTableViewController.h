@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  BankoTableViewController.h
 //  ATMBankoMap
 //
 //  Created by Admin on 12.06.17.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface BankoTableViewController : UIViewController
 
 @end
-
