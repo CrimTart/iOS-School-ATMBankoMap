@@ -21,16 +21,20 @@
 }
 
 +(MKAnnotationView *) createViewAnnotationForMapView: (MKMapView *)mapView annotation: (id <MKAnnotation>)annotation {
-    MKAnnotationView *returnedAnnotationView =
-    [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([CustomAnnotation class])];
+    MKPinAnnotationView *returnedAnnotationView =
+    (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([CustomAnnotation class])];
     if (returnedAnnotationView == nil) {
         returnedAnnotationView =
         [[MKPinAnnotationView alloc] initWithAnnotation:annotation
                                         reuseIdentifier:NSStringFromClass([CustomAnnotation class])];
         
-        ((MKPinAnnotationView *)returnedAnnotationView).pinTintColor = [MKPinAnnotationView purplePinColor];
-        ((MKPinAnnotationView *)returnedAnnotationView).animatesDrop = YES;
-        ((MKPinAnnotationView *)returnedAnnotationView).canShowCallout = YES;
+        returnedAnnotationView.pinTintColor = MKPinAnnotationView.greenPinColor;
+        returnedAnnotationView.animatesDrop = YES;
+        returnedAnnotationView.canShowCallout = YES;
+        
+        UIButton *drawRouteBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        drawRouteBtn.tag = 1;
+        returnedAnnotationView.rightCalloutAccessoryView = drawRouteBtn;
     }
     return returnedAnnotationView;
 }

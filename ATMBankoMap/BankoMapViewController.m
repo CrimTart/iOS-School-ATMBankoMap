@@ -10,11 +10,13 @@
 #import <MapKit/MapKit.h>
 #import "CustomAnnotation.h"
 #import "BankoList.h"
+#import "AppDelegate.h"
 
-@interface BankoMapViewController () <MKMapViewDelegate, UIPopoverPresentationControllerDelegate>
+@interface BankoMapViewController () <MKMapViewDelegate>//, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic, strong) MKMapView *mapView;
 @property (nonatomic, copy) NSArray *mapAnnotations;
+//@property (nonatomic, strong) UIButton *buttonRoutes;
 
 @end
 
@@ -22,24 +24,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor=UIColor.yellowColor;
-    self.title=@"BankoMap";
+    self.view.backgroundColor = UIColor.yellowColor;
+    self.title = @"BankoMap";
 
-    MKCoordinateRegion newRegion;
+    /*MKCoordinateRegion newRegion;
     newRegion.center.latitude = 40.731045;
     newRegion.center.longitude = -73.990691;
-    newRegion.span.latitudeDelta = 0.2;
-    newRegion.span.longitudeDelta = 0.2;
+    newRegion.span.latitudeDelta = 0.05;
+    newRegion.span.longitudeDelta = 0.05;*/
+    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance([self getCurrentUserCoordinate], 1000, 1000);
     
-    _mapView=[MKMapView new];
+    self.mapView = [MKMapView new];
     
     [self.mapView setRegion:newRegion animated:YES];
     
-    self.view = _mapView;
+    self.view = self.mapView;
+    self.mapView.delegate = self;
     
-    CLLocationDegrees lat = 40.731;
-    CLLocationDegrees lng = -73.9906;
-    CLLocation* location = [[CLLocation alloc] initWithLatitude:lat longitude:lng] ;
+    CLLocationDegrees lat = newRegion.center.latitude;
+    CLLocationDegrees lng = newRegion.center.longitude;
+    CLLocation* location = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
     
     BankoList *list = [[BankoList alloc] init];
     
@@ -50,24 +54,86 @@
             [weakself.mapView addAnnotations:self.mapAnnotations];
         });
     }];
-    
-    self.mapAnnotations = [list getAnnotations];
-    
-    [self.mapView addAnnotations:self.mapAnnotations];
-    [self.mapView setRegion:newRegion animated:YES];
+    //[self.mapView addSubview:self.buttonRoutes];
+    [self.mapView setShowsUserLocation:YES];
 }
 
 -(void) centerOn: (NSInteger)annotationNumber {
-    CustomAnnotation *annotation=self.mapAnnotations[annotationNumber];
+    CustomAnnotation *annotation = self.mapAnnotations[annotationNumber];
     MKCoordinateRegion newRegion;
     newRegion.center.latitude = annotation.coordinate.latitude;
     newRegion.center.longitude = annotation.coordinate.longitude;
-    newRegion.span.latitudeDelta = 0.2;
-    newRegion.span.longitudeDelta = 0.2;
+    newRegion.span.latitudeDelta = 0.05;
+    newRegion.span.longitudeDelta = 0.05;
     
     [self.mapView setRegion:newRegion animated:YES];
     [self.mapView selectAnnotation:annotation animated:YES];
 }
+
+-(MKAnnotationView *) mapView: (MKMapView *)mapView viewForAnnotation: (id <MKAnnotation>)annotation {
+    if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
+    if ([annotation isKindOfClass:[CustomAnnotation class]]) {
+        return [CustomAnnotation createViewAnnotationForMapView:mapView annotation:annotation];
+    }
+    return nil;
+}
+
+-(CLLocationCoordinate2D) getCurrentUserCoordinate {
+    CLLocationManager *locationManager = ((AppDelegate *)[UIApplication sharedApplication].delegate).locationManager;
+    return locationManager.location.coordinate;
+}
+
+/*-(UIButton *) buttonRoutes {
+    if (!_buttonRoutes) {
+        _buttonRoutes = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        [_buttonRoutes addTarget:self action:@selector(getAllDirections) forControlEvents:UIControlEventTouchDown];
+    }
+    return _buttonRoutes;
+}*/
+
+-(void) getDirection: (MKAnnotationView *)destination {
+    MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+    request.source = [MKMapItem mapItemForCurrentLocation];
+    
+    CLLocationCoordinate2D destinationCoords = destination.annotation.coordinate;
+    MKPlacemark *destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:destinationCoords addressDictionary:nil];
+    MKMapItem *miDestination = [[MKMapItem alloc] initWithPlacemark:destinationPlacemark];
+    
+    request.destination = miDestination;
+    request.requestsAlternateRoutes = NO;
+    MKDirections *directions = [[MKDirections alloc] initWithRequest:request];
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+        }
+        else {
+            [self showRoute:response];
+        }
+    }];
+}
+
+-(void) showRoute: (MKDirectionsResponse*)response {
+    for (MKRoute *route in response.routes){
+        [self.mapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+        
+        for (MKRouteStep *step in route.steps){
+            NSLog(@"%@,%f", step.instructions, step.distance);
+        }
+    }
+}
+
+-(MKOverlayRenderer *) mapView: (MKMapView *)mapView rendererForOverlay: (id<MKOverlay>)overlay {
+    MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+    renderer.strokeColor = [UIColor blueColor];
+    renderer.lineWidth = 5.0;
+    return renderer;
+}
+
+-(void)mapView:(MKMapView *)mapView annotationView:(nonnull MKAnnotationView *)view calloutAccessoryControlTapped:(nonnull UIControl *)control {
+    if ([control tag] == 1){
+        [self getDirection:view];
+    }
+}
+
 
 
 @end

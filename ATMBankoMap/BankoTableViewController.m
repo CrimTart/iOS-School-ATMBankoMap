@@ -10,6 +10,7 @@
 #import "BankoMapViewController.h"
 #import "CustomAnnotation.h"
 #import "BankoList.h"
+#import "AppDelegate.h"
 
 @interface BankoTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -22,7 +23,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=@"BankoList";
+    self.title = @"BankoList";
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.tableView = [UITableView new];
@@ -41,8 +42,9 @@
     
     BankoList *list = [[BankoList alloc] init];
     
-    CLLocationDegrees lat = 40.731;
-    CLLocationDegrees lng = -73.9906;
+    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance([self getCurrentUserCoordinate], 1000, 1000);
+    CLLocationDegrees lat = newRegion.center.latitude;
+    CLLocationDegrees lng = newRegion.center.longitude;
     
     CLLocation* location = [[CLLocation alloc] initWithLatitude:lat longitude:lng] ;
     
@@ -74,5 +76,11 @@
     BankoMapViewController *mc = self.tabBarController.selectedViewController;
     [mc centerOn:indexPath.row];
 }
+
+- (CLLocationCoordinate2D) getCurrentUserCoordinate{
+    CLLocationManager *locationManager = ((AppDelegate *)[UIApplication sharedApplication].delegate).locationManager;
+    return locationManager.location.coordinate;
+}
+
 
 @end
