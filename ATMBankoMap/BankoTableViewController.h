@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class CLLocationManager;
 
 @interface BankoTableViewController : UIViewController
+
+-(instancetype) initWithLocationManager: (CLLocationManager *)locationManager;
 
 @end

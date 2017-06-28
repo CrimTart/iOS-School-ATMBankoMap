@@ -12,26 +12,29 @@
 #import "BankoList.h"
 #import "AppDelegate.h"
 
-@interface BankoMapViewController () <MKMapViewDelegate>//, UIPopoverPresentationControllerDelegate>
+@interface BankoMapViewController () <MKMapViewDelegate>
 
 @property (nonatomic, strong) MKMapView *mapView;
 @property (nonatomic, copy) NSArray *mapAnnotations;
-//@property (nonatomic, strong) UIButton *buttonRoutes;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 
 @end
 
 @implementation BankoMapViewController
 
-- (void)viewDidLoad {
+-(instancetype) initWithLocationManager: (CLLocationManager *)locationManager {
+    self = [super init];
+    if (self) {
+        _locationManager = locationManager;
+    }
+    return self;
+}
+
+-(void) viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.yellowColor;
     self.title = @"BankoMap";
 
-    /*MKCoordinateRegion newRegion;
-    newRegion.center.latitude = 40.731045;
-    newRegion.center.longitude = -73.990691;
-    newRegion.span.latitudeDelta = 0.05;
-    newRegion.span.longitudeDelta = 0.05;*/
     MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance([self getCurrentUserCoordinate], 1000, 1000);
     
     self.mapView = [MKMapView new];
@@ -54,7 +57,6 @@
             [weakself.mapView addAnnotations:self.mapAnnotations];
         });
     }];
-    //[self.mapView addSubview:self.buttonRoutes];
     [self.mapView setShowsUserLocation:YES];
 }
 
@@ -79,17 +81,8 @@
 }
 
 -(CLLocationCoordinate2D) getCurrentUserCoordinate {
-    CLLocationManager *locationManager = ((AppDelegate *)[UIApplication sharedApplication].delegate).locationManager;
-    return locationManager.location.coordinate;
+    return self.locationManager.location.coordinate;
 }
-
-/*-(UIButton *) buttonRoutes {
-    if (!_buttonRoutes) {
-        _buttonRoutes = [UIButton buttonWithType:UIButtonTypeInfoDark];
-        [_buttonRoutes addTarget:self action:@selector(getAllDirections) forControlEvents:UIControlEventTouchDown];
-    }
-    return _buttonRoutes;
-}*/
 
 -(void) getDirection: (MKAnnotationView *)destination {
     MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
@@ -128,8 +121,8 @@
     return renderer;
 }
 
--(void)mapView:(MKMapView *)mapView annotationView:(nonnull MKAnnotationView *)view calloutAccessoryControlTapped:(nonnull UIControl *)control {
-    if ([control tag] == 1){
+-(void) mapView: (MKMapView *)mapView annotationView: (nonnull MKAnnotationView *)view calloutAccessoryControlTapped: (nonnull UIControl *)control {
+    if (control.tag == 1){
         [self getDirection:view];
     }
 }

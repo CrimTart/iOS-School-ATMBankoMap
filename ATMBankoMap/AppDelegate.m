@@ -28,8 +28,8 @@
     [_locationManager startUpdatingLocation];
 
     UITabBarController *tabbar = [[UITabBarController alloc] init];
-    UIViewController *vc1 = [BankoMapViewController new];
-    UIViewController *vc2 = [BankoTableViewController new];
+    UIViewController *vc1 = [[BankoMapViewController alloc] initWithLocationManager:_locationManager];
+    UIViewController *vc2 = [[BankoTableViewController alloc] initWithLocationManager:_locationManager];
     tabbar.viewControllers = @[vc1, vc2];
     
     self.window = window;

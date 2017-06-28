@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+@class CLLocationManager;
 
 @interface BankoMapViewController : UIViewController
 
 -(void) centerOn: (NSInteger)annotationNumber;
+-(instancetype) initWithLocationManager: (CLLocationManager *)locationManager;
 
 @end

@@ -16,12 +16,21 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, copy) NSArray *mapAnnotations;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 
 @end
 
 @implementation BankoTableViewController
 
-- (void)viewDidLoad {
+-(instancetype) initWithLocationManager: (CLLocationManager *)locationManager {
+    self = [super init];
+    if (self) {
+        _locationManager = locationManager;
+    }
+    return self;
+}
+
+-(void) viewDidLoad {
     [super viewDidLoad];
     self.title = @"BankoList";
     self.view.backgroundColor = [UIColor whiteColor];
@@ -77,9 +86,8 @@
     [mc centerOn:indexPath.row];
 }
 
-- (CLLocationCoordinate2D) getCurrentUserCoordinate{
-    CLLocationManager *locationManager = ((AppDelegate *)[UIApplication sharedApplication].delegate).locationManager;
-    return locationManager.location.coordinate;
+-(CLLocationCoordinate2D) getCurrentUserCoordinate {
+    return self.locationManager.location.coordinate;
 }
 
 

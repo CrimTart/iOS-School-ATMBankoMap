@@ -15,6 +15,9 @@
 
 @end
 
+static const char key[] = "AIzaSyALRbeAncyqpxvGS2YGGkbENHXarw00D9U";
+//"AIzaSyDKfCdJ5BPL27dPCPHBjmoY9ufRBzBBXIs";
+
 @implementation BankoList
 
 -(instancetype) init {
@@ -34,9 +37,8 @@
     self.mapAnnotations = [[NSMutableArray alloc] init];
     
     NSString *openNow = @"opennow";
-    NSString *key = @"AIzaSyALRbeAncyqpxvGS2YGGkbENHXarw00D9U";
-    //@"AIzaSyDKfCdJ5BPL27dPCPHBjmoY9ufRBzBBXIs";
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&keyword=atm&rankby=distance&%@&key=%@", mylocation.coordinate.latitude, mylocation.coordinate.longitude, openNow, key]];
+    NSString *apikey = [NSString stringWithUTF8String:key];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&keyword=atm&rankby=distance&%@&key=%@", mylocation.coordinate.latitude, mylocation.coordinate.longitude, openNow, apikey]];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
